@@ -1,0 +1,50 @@
+<!-- templates/camino.html -->
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Camino más económico</title>
+    <style>
+        body {
+            background: linear-gradient(270deg,
+                rgba(255, 0, 0, 0.2),
+                rgba(255, 165, 0, 0.2),
+                rgba(255, 255, 0, 0.2),
+                rgba(0, 255, 0, 0.2),
+                rgba(0, 0, 255, 0.2),
+                rgba(75, 0, 130, 0.2),
+                rgba(238, 130, 238, 0.2)
+            );
+            background-size: 1400% 1400%;
+            animation: arcoirisSuave 20s ease infinite;
+            min-height: 100vh;
+            padding: 30px;
+        }
+
+        @keyframes arcoirisSuave {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        
+        
+    </style>
+</head>
+<body>
+    <h2>Resultado del camino óptimo: Ibarra → Loja</h2>
+
+    {% if resultado.camino %}
+        <p><strong>Ruta:</strong> {{ resultado.camino | join(" → ") }}</p>
+        <p><strong>Costo total:</strong> ${{ resultado.costo }}</p>
+        {% if resultado.valido %}
+            <p style="color: green;"><strong>✅ El camino incluye una ciudad costera.</strong></p>
+        {% else %}
+            <p style="color: red;"><strong>❌ El camino NO pasa por ciudad costera.</strong></p>
+        {% endif %}
+    {% else %}
+        <p><strong>No se encontró un camino entre Ibarra y Loja.</strong></p>
+    {% endif %}
+
+    <p><a href="/grafo">Ver grafo</a></p>
+</body>
+</html>

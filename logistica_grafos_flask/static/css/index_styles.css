@@ -1,0 +1,41 @@
+body {
+    background: linear-gradient(270deg,
+        rgba(255, 0, 0, 0.2),
+        rgba(255, 165, 0, 0.2),
+        rgba(255, 255, 0, 0.2),
+        rgba(0, 255, 0, 0.2),
+        rgba(0, 0, 255, 0.2),
+        rgba(75, 0, 130, 0.2),
+        rgba(238, 130, 238, 0.2)
+    );
+    background-size: 1400% 1400%;
+    animation: arcoirisSuave 20s ease infinite;
+    min-height: 100vh;
+    padding: 30px;
+}
+
+@keyframes arcoirisSuave {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+.redes_sociales {
+    font-size: 30px;  
+    color: #000;      
+    transition: 0.3s;
+}
+
+.redes_sociales:hover {
+    color: #ff00ea;   
+    transform: scale(1.2); 
+}
+
+.botton {
+    margin: auto;
+    transition: 0.3s;
+}
+.botton:hover {
+    transform: scale(1.2);
+    background-color: rgba(255, 192, 203, 0.5);;
+}
