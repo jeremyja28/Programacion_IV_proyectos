@@ -45,14 +45,20 @@ python app.py
 ## 📁 Estructura Principal
 ```
 proyecto_final_sql_flask_v2/
+├── .env                   # Variables de entorno
+├── .venv/                 # Entorno virtual Python
 ├── app.py                 # Aplicación principal
-├── forms.py              # Formularios web
-├── init_db.py           # Inicialización de BD
-├── requirements.txt     # Dependencias
-├── models/              # Modelos de base de datos
-├── routes/              # Rutas web (blueprints)
-├── controllers/         # Lógica de grafos
-├── templates/           # Plantillas HTML
-├── static/              # CSS, JS, imágenes
+├── requirements.txt       # Dependencias
+├── models/                # Modelos y lógica de datos
+│   ├── entities/          # Modelos de BD (user, ciudad, provincia, ruta)
+│   ├── repositories/      # Acceso a datos (patrón Repository)
+│   └── services/          # Lógica de negocio (optimizado)
+├── routes/                # Rutas web (blueprints)
+├── controllers/           # Lógica de grafos (Dijkstra)
+├── templates/             # Plantillas HTML (optimizadas)
+│   ├── auth/              # Autenticación (login, register)
+│   └── admin/             # Panel administrativo
+├── static/                # CSS, JS, imágenes
+├── codigos_sql/           # Scripts de base de datos
 └── DOCUMENTACION_COMPLETA.md  # Documentación detallada
-```
+``` 
