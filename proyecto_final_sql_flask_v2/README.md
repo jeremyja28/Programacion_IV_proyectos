@@ -26,8 +26,6 @@ Sistema web desarrollado en Flask para gestionar rutas entre ciudades de Ecuador
 
 ### 2. Configuración
 ```bash
-# Inicializar base de datos
-python init_db.py
 
 # Ejecutar aplicación
 python app.py
@@ -58,14 +56,3 @@ proyecto_final_sql_flask_v2/
 ├── static/              # CSS, JS, imágenes
 └── DOCUMENTACION_COMPLETA.md  # Documentación detallada
 ```
-
-## 🎓 Para Exposición
-Ver **DOCUMENTACION_COMPLETA.md** para explicación detallada de:
-- Cada archivo y su función
-- Flujo de la aplicación
-- Tecnologías utilizadas
-- Algoritmos implementados
-- Puntos clave para presentar
-
-## ✅ Estado del Proyecto
-**COMPLETAMENTE FUNCIONAL** - Listo para producción y exposición
