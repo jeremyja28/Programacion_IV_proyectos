@@ -6,7 +6,7 @@ Sistema web desarrollado en Flask para gestionar rutas entre ciudades de Ecuador
 ## 🎯 Funcionalidades Principales
 - **Autenticación de usuarios** con roles (admin/usuario)
 - **Búsqueda de rutas óptimas** entre ciudades
-- **Panel de administración** completo (CRUD)
+- **Panel de administración** 
 - **Visualización de grafos** de rutas
 - **Ruta fija** Ibarra → Loja
 - **Gestión de provincias, ciudades y rutas**
