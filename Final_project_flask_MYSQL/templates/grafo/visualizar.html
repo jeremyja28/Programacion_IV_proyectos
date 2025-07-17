@@ -1,0 +1,217 @@
+{% extends 'base.html' %}
+{% block title %}Visualización del Grafo{% endblock %}
+
+{% block content %}
+<div class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6">
+                <h1 class="m-0">Visualización del Grafo</h1>
+            </div>
+            <div class="col-sm-6">
+                <ol class="breadcrumb float-sm-right">
+                    <li class="breadcrumb-item"><a href="{{ url_for('home.index') }}">Inicio</a></li>
+                    <li class="breadcrumb-item active">Visualización del Grafo</li>
+                </ol>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="content">
+    <div class="container-fluid">
+        <!-- Statistics Cards -->
+        <div class="row mb-4">
+            <div class="col-md-3">
+                <div class="info-box">
+                    <span class="info-box-icon bg-info">
+                        <i class="fas fa-city"></i>
+                    </span>
+                    <div class="info-box-content">
+                        <span class="info-box-text">Total Ciudades</span>
+                        <span class="info-box-number">{{ stats.total_cities }}</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-3">
+                <div class="info-box">
+                    <span class="info-box-icon bg-success">
+                        <i class="fas fa-route"></i>
+                    </span>
+                    <div class="info-box-content">
+                        <span class="info-box-text">Total Rutas</span>
+                        <span class="info-box-number">{{ stats.total_routes }}</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-3">
+                <div class="info-box">
+                    <span class="info-box-icon bg-warning">
+                        <i class="fas fa-water"></i>
+                    </span>
+                    <div class="info-box-content">
+                        <span class="info-box-text">Ciudades Costeras</span>
+                        <span class="info-box-number">{{ stats.coastal_cities }}</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-3">
+                <div class="info-box">
+                    <span class="info-box-icon bg-danger">
+                        <i class="fas fa-percentage"></i>
+                    </span>
+                    <div class="info-box-content">
+                        <span class="info-box-text">Conectividad</span>
+                        <span class="info-box-number">{{ stats.connectivity_percentage }}%</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Graph Visualization -->
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">
+                            <i class="fas fa-project-diagram"></i>
+                            Grafo de Rutas
+                        </h3>
+                        <div class="card-tools">
+                            <button class="btn btn-sm btn-primary" onclick="location.reload()">
+                                <i class="fas fa-sync"></i> Actualizar
+                            </button>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        {% if image_base64 %}
+                        <div class="graph-container" id="graph-container">
+                            <img src="data:image/png;base64,{{ image_base64 }}" 
+                                 alt="Grafo de Rutas" 
+                                 class="graph-image img-fluid">
+                        </div>
+                        {% else %}
+                        <div class="alert alert-warning">
+                            <h4><i class="fas fa-exclamation-triangle"></i> Sin Datos</h4>
+                            <p>No hay datos suficientes para generar el grafo. Por favor, asegúrese de tener:</p>
+                            <ul>
+                                <li>Al menos 2 ciudades creadas</li>
+                                <li>Al menos 1 ruta entre ciudades</li>
+                            </ul>
+                            {% if current_user.is_admin() %}
+                            <div class="mt-3">
+                                <a href="{{ url_for('grafo.create_city') }}" class="btn btn-success">
+                                    <i class="fas fa-plus"></i> Crear Ciudad
+                                </a>
+                                <a href="{{ url_for('grafo.create_route') }}" class="btn btn-primary">
+                                    <i class="fas fa-plus"></i> Crear Ruta
+                                </a>
+                            </div>
+                            {% endif %}
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Legend -->
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">
+                            <i class="fas fa-info-circle"></i>
+                            Leyenda
+                        </h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="d-flex align-items-center mb-2">
+                                    <div class="legend-color" style="width: 20px; height: 20px; background-color: lightblue; border-radius: 50%; margin-right: 10px;"></div>
+                                    <span>Ciudades Costeras</span>
+                                </div>
+                                <div class="d-flex align-items-center mb-2">
+                                    <div class="legend-color" style="width: 20px; height: 20px; background-color: lightgreen; border-radius: 50%; margin-right: 10px;"></div>
+                                    <span>Ciudades del Interior</span>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="d-flex align-items-center mb-2">
+                                    <div class="legend-color" style="width: 20px; height: 2px; background-color: gray; margin-right: 10px;"></div>
+                                    <span>Rutas (con distancia en km)</span>
+                                </div>
+                                <div class="d-flex align-items-center mb-2">
+                                    <i class="fas fa-arrow-right text-gray mr-2"></i>
+                                    <span>Dirección de la ruta</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">
+                            <i class="fas fa-bolt"></i>
+                            Acciones Rápidas
+                        </h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-3">
+                                <a href="{{ url_for('grafo.ruta_optima') }}" class="btn btn-primary btn-block">
+                                    <i class="fas fa-route"></i> Encontrar Ruta Óptima
+                                </a>
+                            </div>
+                            <div class="col-md-3">
+                                <a href="{{ url_for('grafo.list_cities') }}" class="btn btn-info btn-block">
+                                    <i class="fas fa-city"></i> Ver Ciudades
+                                </a>
+                            </div>
+                            <div class="col-md-3">
+                                <a href="{{ url_for('grafo.list_routes') }}" class="btn btn-success btn-block">
+                                    <i class="fas fa-list"></i> Ver Rutas
+                                </a>
+                            </div>
+                            {% if current_user.is_admin() %}
+                            <div class="col-md-3">
+                                <a href="{{ url_for('grafo.create_route') }}" class="btn btn-warning btn-block">
+                                    <i class="fas fa-plus"></i> Crear Ruta
+                                </a>
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+$(document).ready(function() {
+    // Auto-refresh graph every 2 minutes
+    setInterval(function() {
+        location.reload();
+    }, 120000);
+    
+    // Add click handler for graph image
+    $('.graph-image').click(function() {
+        // You can add zoom functionality here
+        $(this).toggleClass('img-thumbnail');
+    });
+});
+</script>
+{% endblock %}

@@ -1,0 +1,244 @@
+{% extends "base.html" %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+<div class="content-wrapper">
+    <div class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1 class="m-0">{{ title }}</h1>
+                </div>
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-right">
+                        <li class="breadcrumb-item"><a href="{{ url_for('admin.dashboard') }}">Dashboard</a></li>
+                        <li class="breadcrumb-item"><a href="{{ url_for('admin.rutas') }}">Rutas</a></li>
+                        <li class="breadcrumb-item active">{{ title }}</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <section class="content">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-8">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">{{ title }}</h3>
+                        </div>
+                        <form method="POST">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label for="ciudad_origen">Ciudad de Origen *</label>
+                                            <select class="form-control" id="ciudad_origen" name="ciudad_origen" required>
+                                                <option value="">Seleccionar ciudad...</option>
+                                                {% for ciudad in ciudades %}
+                                                    <option value="{{ ciudad.id }}"
+                                                        {{ 'selected' if ruta and ruta.ciudad_origen_id == ciudad.id else '' }}>
+                                                        {{ ciudad.nombre }} ({{ ciudad.provincia.nombre }})
+                                                    </option>
+                                                {% endfor %}
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label for="ciudad_destino">Ciudad de Destino *</label>
+                                            <select class="form-control" id="ciudad_destino" name="ciudad_destino" required>
+                                                <option value="">Seleccionar ciudad...</option>
+                                                {% for ciudad in ciudades %}
+                                                    <option value="{{ ciudad.id }}"
+                                                        {{ 'selected' if ruta and ruta.ciudad_destino_id == ciudad.id else '' }}>
+                                                        {{ ciudad.nombre }} ({{ ciudad.provincia.nombre }})
+                                                    </option>
+                                                {% endfor %}
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="peso">Peso/Distancia *</label>
+                                    <input type="number" step="0.01" min="0" class="form-control" id="peso" name="peso" 
+                                           value="{{ ruta.peso if ruta else '' }}" required>
+                                    <small class="form-text text-muted">Peso o distancia de la ruta</small>
+                                </div>
+                            </div>
+                            <div class="card-footer">
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="fas fa-save"></i> Guardar Ruta
+                                </button>
+                                <a href="{{ url_for('admin.rutas') }}" class="btn btn-secondary">
+                                    <i class="fas fa-times"></i> Cancelar
+                                </a>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                
+                <div class="col-md-4">
+                    <div class="card card-info">
+                        <div class="card-header">
+                            <h3 class="card-title">
+                                <i class="fas fa-info-circle"></i> Información
+                            </h3>
+                        </div>
+                        <div class="card-body">
+                            <h5>Campos obligatorios:</h5>
+                            <ul>
+                                <li><strong>Ciudad de Origen:</strong> Ciudad donde inicia la ruta</li>
+                                <li><strong>Ciudad de Destino:</strong> Ciudad donde termina la ruta</li>
+                                <li><strong>Peso/Distancia:</strong> Valor numérico que representa la distancia o peso de la ruta</li>
+                            </ul>
+                            
+                            <div class="alert alert-warning mt-3">
+                                <i class="fas fa-exclamation-triangle"></i>
+                                <strong>Importante:</strong> No se pueden crear rutas duplicadas entre las mismas ciudades.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+{% endblock %}
+                </form>
+            </div>
+        </div>
+        
+        <div class="col-md-4">
+            <div class="card card-info">
+                <div class="card-header">
+                    <h3 class="card-title">
+                        <i class="fas fa-info-circle"></i> Información
+                    </h3>
+                </div>
+                <div class="card-body">
+                    <h5>Campos obligatorios:</h5>
+                    <ul>
+                        <li><strong>Ciudad de origen y destino:</strong> Deben ser diferentes</li>
+                        <li><strong>Longitud:</strong> Distancia en kilómetros</li>
+                        <li><strong>Costo:</strong> Precio del viaje en soles</li>
+                    </ul>
+                    
+                    <h5>Estados de ruta:</h5>
+                    <ul>
+                        <li><span class="badge badge-success">Activa:</span> Ruta disponible</li>
+                        <li><span class="badge badge-danger">Inactiva:</span> Ruta cerrada</li>
+                        <li><span class="badge badge-warning">Mantenimiento:</span> Ruta en reparación</li>
+                    </ul>
+                    
+                    <div id="rutaInfo" class="mt-3" style="display: none;">
+                        <h5>Información de la Ruta:</h5>
+                        <div id="rutaDetalles"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.getElementById('rutaForm');
+    const origenSelect = document.getElementById('ciudad_origen');
+    const destinoSelect = document.getElementById('ciudad_destino');
+    const distanciaInput = document.getElementById('distancia');
+    const costoInput = document.getElementById('costo');
+    
+    // Validación del formulario
+    form.addEventListener('submit', function(e) {
+        if (!origenSelect.value || !destinoSelect.value) {
+            e.preventDefault();
+            alert('Por favor selecciona ciudad de origen y destino');
+            return false;
+        }
+        
+        if (origenSelect.value === destinoSelect.value) {
+            e.preventDefault();
+            alert('La ciudad de origen y destino no pueden ser la misma');
+            return false;
+        }
+        
+        if (!distanciaInput.value || parseFloat(distanciaInput.value) <= 0) {
+            e.preventDefault();
+            alert('Por favor ingresa una distancia válida');
+            distanciaInput.focus();
+            return false;
+        }
+        
+        if (!costoInput.value || parseFloat(costoInput.value) <= 0) {
+            e.preventDefault();
+            alert('Por favor ingresa un costo válido');
+            costoInput.focus();
+            return false;
+        }
+    });
+    
+    // Prevenir seleccionar la misma ciudad
+    origenSelect.addEventListener('change', function() {
+        if (this.value === destinoSelect.value) {
+            destinoSelect.value = '';
+        }
+        actualizarInfoRuta();
+    });
+    
+    destinoSelect.addEventListener('change', function() {
+        if (this.value === origenSelect.value) {
+            origenSelect.value = '';
+        }
+        actualizarInfoRuta();
+    });
+    
+    function actualizarInfoRuta() {
+        const origen = origenSelect.selectedOptions[0];
+        const destino = destinoSelect.selectedOptions[0];
+        const infoDiv = document.getElementById('rutaInfo');
+        const detallesDiv = document.getElementById('rutaDetalles');
+        
+        if (origen && destino && origen.value && destino.value) {
+            infoDiv.style.display = 'block';
+            detallesDiv.innerHTML = `
+                <p><strong>Origen:</strong> ${origen.text}</p>
+                <p><strong>Destino:</strong> ${destino.text}</p>
+                <p><strong>Distancia:</strong> ${distanciaInput.value || 'No especificada'} km</p>
+                <p><strong>Costo:</strong> S/. ${costoInput.value || 'No especificado'}</p>
+            `;
+        } else {
+            infoDiv.style.display = 'none';
+        }
+    }
+    
+    // Actualizar info cuando cambien distancia o costo
+    distanciaInput.addEventListener('input', actualizarInfoRuta);
+    costoInput.addEventListener('input', actualizarInfoRuta);
+    
+    // Inicializar info si hay datos
+    actualizarInfoRuta();
+});
+
+function calcularRutaOptima() {
+    const origen = document.getElementById('ciudad_origen').value;
+    const destino = document.getElementById('ciudad_destino').value;
+    
+    if (!origen || !destino) {
+        alert('Por favor selecciona ciudad de origen y destino primero');
+        return;
+    }
+    
+    if (origen === destino) {
+        alert('La ciudad de origen y destino no pueden ser la misma');
+        return;
+    }
+    
+    // Aquí podrías implementar una llamada AJAX para verificar rutas existentes
+    alert('Función de verificación de ruta - Por implementar');
+}
+</script>
+{% endblock %}

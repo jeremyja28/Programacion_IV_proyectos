@@ -1,0 +1,172 @@
+{% extends "base.html" %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+<div class="content-wrapper">
+    <div class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1 class="m-0">{{ title }}</h1>
+                </div>
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-right">
+                        <li class="breadcrumb-item"><a href="{{ url_for('admin.dashboard') }}">Dashboard</a></li>
+                        <li class="breadcrumb-item"><a href="{{ url_for('admin.ciudades') }}">Ciudades</a></li>
+                        <li class="breadcrumb-item active">{{ title }}</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <section class="content">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-8">
+                    <div class="card card-primary">
+                        <div class="card-header">
+                            <h3 class="card-title">
+                                <i class="fas fa-city"></i> {{ title }}
+                            </h3>
+                        </div>
+                        
+                        <form method="POST" action="{{ url_for('admin.editar_ciudad', id=ciudad.id) if ciudad else url_for('admin.nueva_ciudad') }}">
+                            <div class="card-body">
+                                <!-- Nombre -->
+                                <div class="form-group">
+                                    <label for="nombre">Nombre de la Ciudad</label>
+                                    <input type="text" class="form-control" id="nombre" name="nombre" 
+                                           value="{{ ciudad.nombre if ciudad else '' }}" 
+                                           required maxlength="100">
+                                    <small class="form-text text-muted">
+                                        Ingrese el nombre de la ciudad
+                                    </small>
+                                </div>
+
+                                <!-- Provincia -->
+                                <div class="form-group">
+                                    <label for="provincia_id">Provincia</label>
+                                    <select class="form-control" id="provincia_id" name="provincia_id" required>
+                                        <option value="">Seleccionar provincia</option>
+                                        {% for provincia in provincias %}
+                                            <option value="{{ provincia.id }}" 
+                                                {% if ciudad and ciudad.provincia_id == provincia.id %}selected{% endif %}>
+                                                {{ provincia.nombre }}
+                                            </option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+
+                                <!-- Es Costera -->
+                                <div class="form-group">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="es_costera" name="es_costera" 
+                                               {% if ciudad and ciudad.es_costera %}checked{% endif %}>
+                                        <label class="form-check-label" for="es_costera">
+                                            Es ciudad costera
+                                        </label>
+                                    </div>
+                                    <small class="form-text text-muted">
+                                        Marque si la ciudad está ubicada en la costa
+                                    </small>
+                                </div>
+
+                                <!-- Información adicional -->
+                                <div class="form-group">
+                                    <div class="alert alert-info">
+                                        <i class="fas fa-info-circle"></i>
+                                        <strong>Nota:</strong> Las ciudades costeras tienen características especiales en el cálculo de rutas.
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="card-footer">
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="fas fa-save"></i> {{ 'Actualizar' if ciudad else 'Crear' }} Ciudad
+                                </button>
+                                <a href="{{ url_for('admin.ciudades') }}" class="btn btn-secondary">
+                                    <i class="fas fa-times"></i> Cancelar
+                                </a>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                
+                <div class="col-md-4">
+                    <div class="card card-info">
+                        <div class="card-header">
+                            <h3 class="card-title">
+                                <i class="fas fa-info-circle"></i> Información
+                            </h3>
+                        </div>
+                        <div class="card-body">
+                            <h5>Instrucciones:</h5>
+                            <ul>
+                                <li>Ingrese el nombre de la ciudad</li>
+                                <li>Seleccione la provincia correspondiente</li>
+                                <li>Marque si es ciudad costera</li>
+                                <li>El nombre debe ser único</li>
+                            </ul>
+                            
+                            {% if ciudad %}
+                            <hr>
+                            <h5>Ciudad Actual:</h5>
+                            <p><strong>Nombre:</strong> {{ ciudad.nombre }}</p>
+                            <p><strong>Provincia:</strong> {{ ciudad.provincia.nombre }}</p>
+                            <p><strong>Es Costera:</strong> {{ 'Sí' if ciudad.es_costera else 'No' }}</p>
+                            <p><strong>Rutas Origen:</strong> {{ ciudad.rutas_origen.count() }}</p>
+                            <p><strong>Rutas Destino:</strong> {{ ciudad.rutas_destino.count() }}</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    <div class="card card-success">
+                        <div class="card-header">
+                            <h3 class="card-title">
+                                <i class="fas fa-water"></i> Ciudades Costeras
+                            </h3>
+                        </div>
+                        <div class="card-body">
+                            <p>Las ciudades costeras tienen beneficios especiales:</p>
+                            <ul>
+                                <li>Pueden ser puntos de conexión marítima</li>
+                                <li>Tienen rutas preferenciales en algunos algoritmos</li>
+                                <li>Se muestran con indicadores especiales</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+
+<script>
+// Validación del formulario
+document.addEventListener('DOMContentLoaded', function() {
+    const nombreInput = document.getElementById('nombre');
+    const provinciaSelect = document.getElementById('provincia_id');
+    
+    // Validar nombre en tiempo real
+    nombreInput.addEventListener('input', function() {
+        const nombre = this.value.trim();
+        if (nombre.length < 2) {
+            this.setCustomValidity('El nombre debe tener al menos 2 caracteres');
+        } else {
+            this.setCustomValidity('');
+        }
+    });
+    
+    // Validar provincia
+    provinciaSelect.addEventListener('change', function() {
+        if (!this.value) {
+            this.setCustomValidity('Debe seleccionar una provincia');
+        } else {
+            this.setCustomValidity('');
+        }
+    });
+});
+</script>
+{% endblock %}

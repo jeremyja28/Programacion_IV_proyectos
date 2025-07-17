@@ -1,0 +1,82 @@
+{% extends 'base.html' %}
+
+{% block title %}Ruta más económica{% endblock %}
+
+{% block content %}
+<style>
+    .grafo-container {
+        overflow: hidden;
+        max-height: 0;
+        opacity: 0;
+        transition: max-height 0.5s ease, opacity 0.5s ease;
+    }
+
+    .grafo-container.show {
+        max-height: 1000px;
+        opacity: 1;
+    }
+</style>
+
+    <div class="container mt-5">
+    <h2 class="text-center">Ruta más económica</h2>
+    <p class="text-center">Selecciona las ciudades para calcular el camino más económico.</p>
+
+    <form method="POST" class="mt-4">
+        {{ form.hidden_tag() }}
+        <div class="form-row justify-content-center">
+        <div class="col-md-4 mb-3">
+            {{ form.ciudad_origen.label(class="form-label") }}
+            {{ form.ciudad_origen(class="form-control" + (" is-invalid" if form.ciudad_origen.errors else "")) }}
+            {% if form.ciudad_origen.errors %}
+                <div class="invalid-feedback">
+                    {% for error in form.ciudad_origen.errors %}
+                        {{ error }}
+                    {% endfor %}
+                </div>
+            {% endif %}
+        </div>
+        <div class="col-md-4 mb-3">
+            {{ form.ciudad_destino.label(class="form-label") }}
+            {{ form.ciudad_destino(class="form-control" + (" is-invalid" if form.ciudad_destino.errors else "")) }}
+            {% if form.ciudad_destino.errors %}
+                <div class="invalid-feedback">
+                    {% for error in form.ciudad_destino.errors %}
+                        {{ error }}
+                    {% endfor %}
+                </div>
+            {% endif %}
+        </div>
+        </div>
+        <div class="text-center">
+            {{ form.submit(class="btn btn-primary") }}
+        </div>
+    </form>
+
+    {% if resultado %}
+    <div class="mt-5">
+        <h4>Resultado:</h4>
+        <p><strong>Camino:</strong> {{ resultado.camino | join(' → ') }}</p>
+        <p><strong>Costo total:</strong> {{ resultado.costo }}</p>
+        <p><strong>¿Pasa por ciudad costera?</strong> {{ 'Sí' if resultado.valido else 'No' }}</p>
+
+        <div class="text-center mt-4">
+        <button class="btn btn-outline-info" onclick="toggleGrafo(this)">
+            Ver grafo
+        </button>
+        </div>
+
+        <div class="text-center mt-4 grafo-container" id="grafo-img">
+        <img src="{{ url_for('ruta_economica.ver_grafo') }}" alt="Grafo generado" class="img-fluid">
+        </div>
+
+        <script>
+        function toggleGrafo(button) {
+            const grafo = document.getElementById('grafo-img');
+            grafo.classList.toggle('show');
+            button.textContent = grafo.classList.contains('show') ? 'Ocultar grafo' : 'Ver grafo';
+        }
+        </script>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Login - Sistema de Rutas</title>
+
+  <!-- Google Font: Source Sans Pro -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='adminlte/plugins/fontawesome-free/css/all.min.css') }}">
+  <!-- Theme style -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='adminlte/dist/css/adminlte.min.css') }}">
+  
+  <style>
+    .login-page {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .login-box {
+      width: 400px;
+      margin: 0 auto;
+    }
+
+    .card {
+      border: none;
+      border-radius: 15px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    }
+
+    .card-header {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      border-radius: 15px 15px 0 0;
+      padding: 20px;
+    }
+
+    .card-body {
+      padding: 30px;
+    }
+
+    .form-control {
+      border-radius: 25px;
+      padding: 12px 20px;
+      border: 1px solid #ddd;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      border: none;
+      border-radius: 25px;
+      padding: 12px;
+      font-weight: bold;
+    }
+
+    .btn-primary:hover {
+      background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+    }
+
+    .input-group-text {
+      border-radius: 0 25px 25px 0;
+      border: 1px solid #ddd;
+      border-left: none;
+      background: #f8f9fa;
+    }
+
+    .alert {
+      border-radius: 10px;
+      margin-bottom: 20px;
+    }
+
+    .alert-info {
+      background-color: #e3f2fd;
+      border-color: #2196f3;
+      color: #0d47a1;
+    }
+
+    code {
+      background-color: #f5f5f5;
+      padding: 2px 6px;
+      border-radius: 3px;
+      font-family: 'Courier New', monospace;
+    }
+  </style>
+</head>
+
+<body class="hold-transition login-page">
+<div class="login-box">
+  <div class="card card-outline card-primary">
+    <div class="card-header text-center">
+      <h1><b>Sistema</b> de Rutas</h1>
+    </div>
+    <div class="card-body">
+      <p class="login-box-msg">Inicia sesión para acceder al sistema</p>
+      
+      <!-- Mostrar credenciales disponibles -->
+      <div class="alert alert-info">
+        <h5><i class="icon fas fa-info"></i> Credenciales disponibles:</h5>
+        <strong>ADMINISTRADOR:</strong><br>
+        Usuario: <code>admin</code><br>
+        Contraseña: <code>admin123</code><br><br>
+        <strong>USUARIO NORMAL:</strong><br>
+        Usuario: <code>usuario</code><br>
+        Contraseña: <code>admin123</code>
+      </div>
+      
+      <!-- Flash Messages -->
+      {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+          {% for category, message in messages %}
+            <div class="alert alert-{{ 'danger' if category == 'error' else 'success' }} alert-dismissible">
+              <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+              {{ message }}
+            </div>
+          {% endfor %}
+        {% endif %}
+      {% endwith %}
+      
+      <form method="POST">
+        <div class="input-group mb-3">
+          <input type="text" class="form-control" name="username" placeholder="Usuario" required>
+          <div class="input-group-append">
+            <div class="input-group-text">
+              <span class="fas fa-user"></span>
+            </div>
+          </div>
+        </div>
+        <div class="input-group mb-3">
+          <input type="password" class="form-control" name="password" placeholder="Contraseña" required>
+          <div class="input-group-append">
+            <div class="input-group-text">
+              <span class="fas fa-lock"></span>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-12">
+            <button type="submit" class="btn btn-primary btn-block">Iniciar Sesión</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- jQuery -->
+<script src="{{ url_for('static', filename='adminlte/plugins/jquery/jquery.min.js') }}"></script>
+<!-- Bootstrap 4 -->
+<script src="{{ url_for('static', filename='adminlte/plugins/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+<!-- AdminLTE App -->
+<script src="{{ url_for('static', filename='adminlte/dist/js/adminlte.min.js') }}"></script>
+</body>
+</html>

@@ -1,0 +1,61 @@
+from flask_wtf import FlaskForm
+from wtforms import StringField, PasswordField, SubmitField, SelectField, FloatField, BooleanField, TextAreaField
+from wtforms.validators import DataRequired, Email, Length, EqualTo, NumberRange, Optional, ValidationError
+from models.models import User, Ciudad
+
+class LoginForm(FlaskForm):
+    username = StringField('Usuario', validators=[DataRequired(), Length(min=4, max=20)])
+    password = PasswordField('Contraseña', validators=[DataRequired()])
+    submit = SubmitField('Iniciar Sesión')
+
+class RegistrationForm(FlaskForm):
+    username = StringField('Usuario', validators=[DataRequired(), Length(min=4, max=20)])
+    email = StringField('Email', validators=[DataRequired(), Email()])
+    password = PasswordField('Contraseña', validators=[DataRequired(), Length(min=6)])
+    password2 = PasswordField('Repetir Contraseña', 
+                             validators=[DataRequired(), EqualTo('password')])
+    submit = SubmitField('Registrarse')
+    
+    def validate_username(self, username):
+        user = User.query.filter_by(username=username.data).first()
+        if user:
+            raise ValidationError('El nombre de usuario ya está en uso.')
+    
+    def validate_email(self, email):
+        user = User.query.filter_by(email=email.data).first()
+        if user:
+            raise ValidationError('El email ya está registrado.')
+
+class CiudadForm(FlaskForm):
+    nombre = StringField('Nombre de la Ciudad', validators=[DataRequired(), Length(max=100)])
+    es_costera = BooleanField('Es ciudad costera')
+    latitud = FloatField('Latitud', validators=[Optional(), NumberRange(-90, 90)])
+    longitud = FloatField('Longitud', validators=[Optional(), NumberRange(-180, 180)])
+    submit = SubmitField('Guardar Ciudad')
+
+class RutaForm(FlaskForm):
+    ciudad_origen = SelectField('Ciudad de Origen', coerce=int, validators=[DataRequired()])
+    ciudad_destino = SelectField('Ciudad de Destino', coerce=int, validators=[DataRequired()])
+    distancia = FloatField('Distancia (km)', validators=[DataRequired(), NumberRange(min=0.1)])
+    costo = FloatField('Costo', validators=[DataRequired(), NumberRange(min=0.1)])
+    tiempo_estimado = FloatField('Tiempo Estimado (horas)', validators=[Optional(), NumberRange(min=0.1)])
+    estado = SelectField('Estado', choices=[('activa', 'Activa'), ('inactiva', 'Inactiva'), ('mantenimiento', 'En Mantenimiento')])
+    submit = SubmitField('Guardar Ruta')
+    
+    def __init__(self, *args, **kwargs):
+        super(RutaForm, self).__init__(*args, **kwargs)
+        # Cargar ciudades dinámicamente
+        self.ciudad_origen.choices = [(c.id, c.nombre) for c in Ciudad.query.all()]
+        self.ciudad_destino.choices = [(c.id, c.nombre) for c in Ciudad.query.all()]
+
+class BuscarRutaForm(FlaskForm):
+    ciudad_origen = SelectField('Ciudad de Origen', coerce=int, validators=[DataRequired()])
+    ciudad_destino = SelectField('Ciudad de Destino', coerce=int, validators=[DataRequired()])
+    submit = SubmitField('Buscar Ruta Óptima')
+    
+    def __init__(self, *args, **kwargs):
+        super(BuscarRutaForm, self).__init__(*args, **kwargs)
+        # Cargar ciudades dinámicamente
+        ciudades = [(c.id, c.nombre) for c in Ciudad.query.all()]
+        self.ciudad_origen.choices = ciudades
+        self.ciudad_destino.choices = ciudades

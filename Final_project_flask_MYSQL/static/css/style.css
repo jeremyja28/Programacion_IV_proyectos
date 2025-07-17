@@ -1,0 +1,262 @@
+/* Custom CSS for Flask Graph Management System */
+
+/* General Styles */
+body {
+    font-family: 'Source Sans Pro', sans-serif;
+}
+
+/* Card Animations */
+.card {
+    transition: all 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Stats Cards */
+.info-box {
+    transition: all 0.3s ease;
+}
+
+.info-box:hover {
+    transform: scale(1.02);
+}
+
+/* Graph Visualization */
+.graph-container {
+    text-align: center;
+    padding: 20px;
+}
+
+.graph-image {
+    max-width: 100%;
+    height: auto;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Form Styles */
+.form-group label {
+    font-weight: 600;
+}
+
+.form-control:focus {
+    border-color: #007bff;
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+}
+
+/* Button Styles */
+.btn-primary {
+    background-color: #007bff;
+    border-color: #007bff;
+}
+
+.btn-primary:hover {
+    background-color: #0056b3;
+    border-color: #0056b3;
+}
+
+.btn-danger {
+    background-color: #dc3545;
+    border-color: #dc3545;
+}
+
+.btn-danger:hover {
+    background-color: #c82333;
+    border-color: #c82333;
+}
+
+/* Table Styles */
+.table thead th {
+    background-color: #f8f9fa;
+    border-bottom: 2px solid #dee2e6;
+}
+
+.table tbody tr:hover {
+    background-color: #f8f9fa;
+}
+
+/* Navigation */
+.nav-link.active {
+    background-color: #007bff !important;
+    color: white !important;
+}
+
+/* Sidebar */
+.sidebar-dark-primary .nav-sidebar > .nav-item > .nav-link.active {
+    background-color: #007bff;
+    color: #fff;
+}
+
+/* Login Page */
+.login-page {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.login-box {
+    margin: 7% auto;
+}
+
+.login-card-body {
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 10px;
+    padding: 30px;
+}
+
+/* Dashboard Cards */
+.dashboard-card {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border: none;
+}
+
+.dashboard-card .card-body {
+    padding: 20px;
+}
+
+.dashboard-card h3 {
+    font-size: 2.5rem;
+    margin-bottom: 0;
+}
+
+.dashboard-card p {
+    margin-bottom: 0;
+    opacity: 0.9;
+}
+
+/* Route Results */
+.route-result {
+    background: #f8f9fa;
+    border: 1px solid #dee2e6;
+    border-radius: 8px;
+    padding: 20px;
+    margin: 20px 0;
+}
+
+.route-path {
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: #007bff;
+}
+
+.route-stats {
+    display: flex;
+    justify-content: space-around;
+    margin-top: 15px;
+}
+
+.route-stat {
+    text-align: center;
+}
+
+.route-stat-value {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #28a745;
+}
+
+.route-stat-label {
+    font-size: 0.9rem;
+    color: #6c757d;
+}
+
+/* Coastal City Badge */
+.coastal-badge {
+    background-color: #17a2b8;
+    color: white;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 0.8rem;
+}
+
+/* Admin Badge */
+.admin-badge {
+    background-color: #dc3545;
+    color: white;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 0.8rem;
+}
+
+/* Status Badges */
+.status-active {
+    background-color: #28a745;
+    color: white;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 0.8rem;
+}
+
+.status-inactive {
+    background-color: #6c757d;
+    color: white;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 0.8rem;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .dashboard-card h3 {
+        font-size: 2rem;
+    }
+    
+    .route-stats {
+        flex-direction: column;
+        gap: 10px;
+    }
+    
+    .graph-container {
+        padding: 10px;
+    }
+}
+
+/* Loading Spinner */
+.loading-spinner {
+    display: none;
+    text-align: center;
+    padding: 20px;
+}
+
+.spinner-border {
+    width: 3rem;
+    height: 3rem;
+}
+
+/* Custom Toastr Styles */
+.toast-success {
+    background-color: #28a745;
+}
+
+.toast-error {
+    background-color: #dc3545;
+}
+
+.toast-info {
+    background-color: #17a2b8;
+}
+
+.toast-warning {
+    background-color: #ffc107;
+    color: #212529;
+}
+
+/* Dark Mode Support */
+@media (prefers-color-scheme: dark) {
+    .card {
+        background-color: #343a40;
+        border-color: #495057;
+    }
+    
+    .table {
+        color: #fff;
+    }
+    
+    .table thead th {
+        background-color: #495057;
+        border-color: #495057;
+    }
+}

@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+
+{% block title %}Gestión de Provincias{% endblock %}
+
+{% block content %}
+<div class="content-wrapper">
+    <div class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1 class="m-0">Gestión de Provincias</h1>
+                </div>
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-right">
+                        <li class="breadcrumb-item"><a href="{{ url_for('admin.dashboard') }}">Dashboard</a></li>
+                        <li class="breadcrumb-item active">Provincias</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <section class="content">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">Lista de Provincias</h3>
+                            <div class="card-tools">
+                                <a href="{{ url_for('admin.nueva_provincia') }}" class="btn btn-success btn-sm">
+                                    <i class="fas fa-plus"></i> Nueva Provincia
+                                </a>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table table-bordered table-striped">
+                                    <thead>
+                                        <tr>
+                                            <th>ID</th>
+                                            <th>Nombre</th>
+                                            <th>Código</th>
+                                            <th>Ciudades</th>
+                                            <th>Fecha Creación</th>
+                                            <th>Acciones</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for provincia in provincias %}
+                                        <tr>
+                                            <td>{{ provincia.id }}</td>
+                                            <td>{{ provincia.nombre }}</td>
+                                            <td>{{ provincia.codigo or '-' }}</td>
+                                            <td>{{ provincia.ciudades.count() }}</td>
+                                            <td>{{ provincia.created_at.strftime('%d/%m/%Y') }}</td>
+                                            <td>
+                                                <a href="{{ url_for('admin.editar_provincia', id=provincia.id) }}" 
+                                                   class="btn btn-warning btn-sm">
+                                                    <i class="fas fa-edit"></i> Editar
+                                                </a>
+                                                {% if provincia.ciudades.count() == 0 %}
+                                                <form method="POST" action="{{ url_for('admin.eliminar_provincia', id=provincia.id) }}" 
+                                                      style="display: inline;" 
+                                                      onsubmit="return confirm('¿Está seguro que desea eliminar esta provincia?')">
+                                                    <button type="submit" class="btn btn-danger btn-sm">
+                                                        <i class="fas fa-trash"></i> Eliminar
+                                                    </button>
+                                                </form>
+                                                {% endif %}
+                                            </td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+{% endblock %}

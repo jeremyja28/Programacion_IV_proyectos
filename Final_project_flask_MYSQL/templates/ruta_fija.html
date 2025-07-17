@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+
+{% block title %}Ruta Fija{% endblock %}
+
+{% block content %}
+<style>
+    .grafo-container {
+        overflow: hidden;
+        max-height: 0;
+        opacity: 0;
+        transition: max-height 0.5s ease, opacity 0.5s ease;
+    }
+
+    .grafo-container.show {
+        max-height: 1000px;
+        opacity: 1;
+    }
+</style>
+
+    <div class="container mt-5">
+    <h2 class="text-center">Ruta fija: Ibarra → Loja</h2>
+    <p class="text-center">Este es el camino más económico entre Ibarra y Loja.</p>
+
+    {% if resultado %}
+    <div class="mt-5">
+        <h4>Resultado:</h4>
+        <p><strong>Camino:</strong> {{ resultado.camino | join(' → ') }}</p>
+        <p><strong>Costo total:</strong> {{ resultado.costo }}</p>
+        <p><strong>¿Pasa por ciudad costera?</strong> {{ 'Sí' if resultado.valido else 'No' }}</p>
+
+        <div class="text-center mt-4">
+        <button class="btn btn-outline-info" onclick="toggleGrafo(this)">
+            Ver grafo
+        </button>
+        </div>
+
+        <div class="text-center mt-4 grafo-container" id="grafo-img">
+        <img src="{{ url_for('ruta_fija.grafo_fijo') }}" alt="Grafo generado" class="img-fluid">
+        </div>
+
+        <script>
+        function toggleGrafo(button) {
+            const grafo = document.getElementById('grafo-img');
+            grafo.classList.toggle('show');
+            button.textContent = grafo.classList.contains('show') ? 'Ocultar grafo' : 'Ver grafo';
+        }
+        </script>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
